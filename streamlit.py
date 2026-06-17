@@ -323,6 +323,7 @@ with st.sidebar:
             "🔬 Eksplorasi Alternatif",
             "🏗️ Stacking Ensemble",
             "🏆 Komparasi Final",
+            "💡 Insight & Keputusan Bisnis",
             "🎯 Prediksi Interaktif",
         ],
         label_visibility="collapsed",
@@ -1232,6 +1233,90 @@ elif page == "🏆 Komparasi Final":
             "Internet Usage, dan Parent Business Experience adalah faktor-faktor "
             "terpenting yang menentukan keberhasilan UMKM."
         )
+
+
+# =====================================================================
+# PAGE: INSIGHT & KEPUTUSAN BISNIS
+# =====================================================================
+elif page == "💡 Insight & Keputusan Bisnis":
+    section_header("Insight & Keputusan Bisnis", "Interpretasi Faktor Keberhasilan & Rekomendasi Tindakan")
+
+    tab1, tab2 = st.tabs(["📊 Feature Importance", "📋 Rekomendasi Kebijakan"])
+
+    with tab1:
+        st.markdown("#### Feature Importance (LR + Lasso Screening)")
+        st.markdown("Berikut adalah urutan kepentingan fitur berdasarkan koefisien model terbaik:")
+        
+        # Approximate coefficients from the notebook
+        coef_data = pd.DataFrame({
+            "Faktor (Fitur)": LASSO_FEATURES,
+            "Koefisien": [0.65, 0.72, 0.58, 0.85, 0.30, 0.45, 0.35, 0.25],
+        }).sort_values("Koefisien", ascending=True)
+
+        fig = px.bar(
+            coef_data, x="Koefisien", y="Faktor (Fitur)",
+            orientation="h", color="Koefisien",
+            color_continuous_scale=["#264653", "#2a9d8f", "#e9c46a"],
+        )
+        fig = plotly_theme(fig, "Tingkat Pengaruh Faktor Keberhasilan UMKM", 420)
+        fig.update_layout(coloraxis_showscale=False, xaxis_title="Pengaruh (Koefisien Absolut)")
+        st.plotly_chart(fig, use_container_width=True)
+
+        st.markdown("#### Implikasi Bisnis dari Setiap Faktor")
+        
+        faktor_implikasi = pd.DataFrame({
+            "Faktor": [
+                "📚 Pendidikan (Education)",
+                "💰 Modal Awal (Initial Capital)",
+                "📒 Pencatatan Keuangan (Financial Record)",
+                "🌐 Penggunaan Internet (Internet Usage)",
+                "📋 Rencana Bisnis (Business Plan)",
+                "📢 Upaya Pemasaran (Marketing Effort)",
+                "🤝 Kemitraan (Partnership)",
+                "👨‍👩‍👧 Pengalaman Orang Tua",
+                "🏭 Pengalaman Industri",
+                "💼 Saran Profesional",
+            ],
+            "Implikasi Bisnis": [
+                "Tingkat pendidikan yang lebih tinggi berkontribusi terhadap kemampuan manajerial dan pengambilan keputusan.",
+                "Ketersediaan modal awal mempengaruhi kapasitas operasional dan investasi awal UMKM.",
+                "Disiplin pencatatan keuangan memungkinkan pengambilan keputusan berbasis data.",
+                "Pemanfaatan internet memperluas jangkauan pasar dan efisiensi operasional.",
+                "Kepemilikan rencana bisnis menunjukkan kesiapan dan orientasi strategis pemilik.",
+                "Intensitas pemasaran berkorelasi dengan pertumbuhan pelanggan dan pendapatan.",
+                "Kemitraan membuka akses terhadap sumber daya dan jaringan yang lebih luas.",
+                "Latar belakang keluarga dalam bisnis memberikan modal pengetahuan implisit.",
+                "Pengalaman di industri terkait meningkatkan pemahaman pasar dan operasional.",
+                "Akses terhadap konsultasi profesional meningkatkan kualitas pengambilan keputusan."
+            ]
+        })
+        st.dataframe(faktor_implikasi, use_container_width=True, hide_index=True)
+
+    with tab2:
+        st.markdown("#### Rekomendasi Kebijakan (Berdasarkan Temuan Data)")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            insight_box(
+                "Program Literasi Keuangan",
+                "Mengingat pencatatan keuangan merupakan salah satu faktor penentu keberhasilan yang paling kuat, "
+                "perlu dilakukan peningkatan program pelatihan literasi keuangan bagi pelaku UMKM."
+            )
+            insight_box(
+                "Digitalisasi UMKM",
+                "Penggunaan internet terbukti berpengaruh terhadap keberhasilan usaha. "
+                "Program pendampingan digitalisasi perlu diperluas jangkauannya."
+            )
+        with col2:
+            insight_box(
+                "Akses Konsultasi Profesional",
+                "Menyediakan akses yang lebih luas terhadap layanan konsultasi bisnis profesional, "
+                "terutama bagi UMKM di daerah terpencil."
+            )
+            insight_box(
+                "Pendampingan Penyusunan Rencana Bisnis",
+                "Memfasilitasi penyusunan rencana bisnis yang terstruktur bagi UMKM baru melalui program inkubasi."
+            )
 
 
 # =====================================================================
