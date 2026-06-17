@@ -1325,9 +1325,9 @@ elif page == "💡 Insight & Keputusan Bisnis":
 elif page == "🎯 Prediksi Interaktif":
     section_header("Prediksi Interaktif", "Masukkan profil UMKM untuk mendapatkan prediksi")
 
-    # Try to load the saved model
-    model_path = RESULTS / "models" / "baseline_Logistic_Regression.pkl"
-    scaler_path = RESULTS / "scaler.pkl"
+    # Coba memuat model dan scaler final (LR + Lasso Screening)
+    model_path = RESULTS / "models" / "final_lr_lasso.pkl"
+    scaler_path = RESULTS / "scaler_lasso.pkl"
 
     try:
         model = joblib.load(model_path)
@@ -1337,30 +1337,13 @@ elif page == "🎯 Prediksi Interaktif":
         model_loaded = False
 
     if not model_loaded:
-        st.warning("Model atau scaler tidak ditemukan. Menggunakan model simulasi.")
-        # Train a quick model for demo
-        from sklearn.model_selection import train_test_split as tts_p
-        X_p = RAW_DF[FEATURES_AFTER_DROP]
-        y_p = RAW_DF[TARGET]
-        X_train_p, X_test_p, y_train_p, y_test_p = tts_p(X_p, y_p, test_size=0.2, random_state=42, stratify=y_p)
+        st.error("Model Final LR + Lasso tidak ditemukan! Pastikan telah menjalankan dan menyimpan model di notebook 00_fully_pipeline.ipynb.")
+        st.stop()
 
-        norm_cols_p = ['Industry_Experience', 'Education', 'Marketing_Effort', 'Professional_Advice']
-        scaler = StandardScaler()
-        X_train_s = X_train_p.copy()
-        X_train_s[norm_cols_p] = scaler.fit_transform(X_train_p[norm_cols_p])
-
-        sm = SMOTE(random_state=42)
-        X_res, y_res = sm.fit_resample(X_train_s, y_train_p)
-
-        model = LogisticRegression(max_iter=1000, random_state=42, class_weight='balanced')
-        model.fit(X_res, y_res)
-        model_loaded = True
-
-    st.markdown("#### Masukkan Data UMKM")
+    st.markdown("#### Masukkan Data UMKM (Fitur Terseleksi Lasso)")
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        education = st.slider("📚 Education (1-5)", 1, 5, 3)
         initial_capital = st.selectbox("💰 Modal Awal", [0, 1], format_func=lambda x: "Ada" if x else "Tidak Ada")
         financial_record = st.selectbox("📒 Pencatatan Keuangan", [0, 1], format_func=lambda x: "Ya" if x else "Tidak")
         internet_usage = st.selectbox("🌐 Penggunaan Internet", [0, 1], format_func=lambda x: "Ya" if x else "Tidak")
@@ -1368,31 +1351,31 @@ elif page == "🎯 Prediksi Interaktif":
     with col2:
         business_plan = st.selectbox("📋 Rencana Bisnis", [0, 1], format_func=lambda x: "Ya" if x else "Tidak")
         marketing_effort = st.slider("📢 Upaya Pemasaran (1-7)", 1, 7, 4)
-        partnership = st.selectbox("🤝 Kemitraan", [0, 1], format_func=lambda x: "Ya" if x else "Tidak")
+        parent_exp = st.selectbox("👨‍👩‍👧 Pengalaman Orang Tua", [0, 1], format_func=lambda x: "Ya" if x else "Tidak")
 
     with col3:
-        parent_exp = st.selectbox("👨‍👩‍👧 Pengalaman Orang Tua", [0, 1], format_func=lambda x: "Ya" if x else "Tidak")
         industry_exp = st.slider("🏭 Pengalaman Industri (tahun)", 0, 20, 5)
         professional_advice = st.slider("💼 Saran Profesional (1-7)", 1, 7, 4)
 
     if st.button("🔮 Prediksi Keberhasilan", type="primary", use_container_width=True):
         input_data = pd.DataFrame({
-            "Education": [education],
             "Initial_Capital": [initial_capital],
             "Financial_Record_Keeping": [financial_record],
             "Internet_Usage": [internet_usage],
             "Business_Plan": [business_plan],
             "Marketing_Effort": [marketing_effort],
-            "Partnership": [partnership],
             "Parent_Business_Experience": [parent_exp],
             "Industry_Experience": [industry_exp],
             "Professional_Advice": [professional_advice],
         })
 
-        # Normalize
-        norm_cols_pred = ['Industry_Experience', 'Education', 'Marketing_Effort', 'Professional_Advice']
+        # Susun kolom sesuai LASSO_FEATURES agar urutan tidak tertukar
+        input_data = input_data[LASSO_FEATURES]
+
+        # Normalisasi
+        norm_cols_lasso = ['Industry_Experience', 'Marketing_Effort', 'Professional_Advice']
         input_scaled = input_data.copy()
-        input_scaled[norm_cols_pred] = scaler.transform(input_data[norm_cols_pred])
+        input_scaled[norm_cols_lasso] = scaler.transform(input_data[norm_cols_lasso])
 
         # Predict
         try:
