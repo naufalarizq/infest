@@ -1364,9 +1364,9 @@ elif page == "🎯 Prediksi Interaktif":
                 'bgcolor': '#1a1d23',
                 'bordercolor': '#2a2e38',
                 'steps': [
-                    {'range': [0, 40], 'color': '#e76f5133'},
-                    {'range': [40, 60], 'color': '#e9c46a33'},
-                    {'range': [60, 100], 'color': '#2a9d8f33'},
+                    {'range': [0, 40], 'color': 'rgba(231, 111, 81, 0.2)'},
+                    {'range': [40, 60], 'color': 'rgba(233, 196, 106, 0.2)'},
+                    {'range': [60, 100], 'color': 'rgba(42, 157, 143, 0.2)'},
                 ],
                 'threshold': {
                     'line': {'color': '#e76f51', 'width': 3},
