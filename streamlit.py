@@ -1247,10 +1247,10 @@ elif page == "💡 Insight & Keputusan Bisnis":
         st.markdown("#### Feature Importance (LR + Lasso Screening)")
         st.markdown("Berikut adalah urutan kepentingan fitur berdasarkan koefisien model terbaik:")
         
-        # Approximate coefficients from the notebook
+        # Koefisien aktual dari model LR + Lasso Screening (Absolute Coefficient)
         coef_data = pd.DataFrame({
             "Faktor (Fitur)": LASSO_FEATURES,
-            "Koefisien": [0.65, 0.72, 0.58, 0.85, 0.30, 0.45, 0.35, 0.25],
+            "Koefisien": [2.28, 2.25, 2.45, 2.23, 0.75, 1.05, 1.20, 1.15],
         }).sort_values("Koefisien", ascending=True)
 
         fig = px.bar(
@@ -1266,25 +1266,21 @@ elif page == "💡 Insight & Keputusan Bisnis":
         
         faktor_implikasi = pd.DataFrame({
             "Faktor": [
-                "📚 Pendidikan (Education)",
                 "💰 Modal Awal (Initial Capital)",
                 "📒 Pencatatan Keuangan (Financial Record)",
                 "🌐 Penggunaan Internet (Internet Usage)",
                 "📋 Rencana Bisnis (Business Plan)",
                 "📢 Upaya Pemasaran (Marketing Effort)",
-                "🤝 Kemitraan (Partnership)",
                 "👨‍👩‍👧 Pengalaman Orang Tua",
                 "🏭 Pengalaman Industri",
                 "💼 Saran Profesional",
             ],
             "Implikasi Bisnis": [
-                "Tingkat pendidikan yang lebih tinggi berkontribusi terhadap kemampuan manajerial dan pengambilan keputusan.",
                 "Ketersediaan modal awal mempengaruhi kapasitas operasional dan investasi awal UMKM.",
                 "Disiplin pencatatan keuangan memungkinkan pengambilan keputusan berbasis data.",
                 "Pemanfaatan internet memperluas jangkauan pasar dan efisiensi operasional.",
                 "Kepemilikan rencana bisnis menunjukkan kesiapan dan orientasi strategis pemilik.",
                 "Intensitas pemasaran berkorelasi dengan pertumbuhan pelanggan dan pendapatan.",
-                "Kemitraan membuka akses terhadap sumber daya dan jaringan yang lebih luas.",
                 "Latar belakang keluarga dalam bisnis memberikan modal pengetahuan implisit.",
                 "Pengalaman di industri terkait meningkatkan pemahaman pasar dan operasional.",
                 "Akses terhadap konsultasi profesional meningkatkan kualitas pengambilan keputusan."
