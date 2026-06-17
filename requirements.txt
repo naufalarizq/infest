@@ -1,0 +1,13 @@
+pandas
+numpy
+plotly
+scipy
+kaleido
+scikit-learn
+imbalanced-learn
+joblib
+xgboost
+matplotlib
+seaborn
+pyarrow
+streamlit
